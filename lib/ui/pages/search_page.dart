@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:rick_and_morty_serach/bloc/character_bloc.dart';
 import 'package:rick_and_morty_serach/data/models/character.dart';
+import 'package:rick_and_morty_serach/ui/widgets/custom_list_tile.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -106,14 +107,7 @@ class _SearchPageState extends State<SearchPage> {
         return Padding(
           padding: const EdgeInsets.only(
               right: 16.0, left: 16.0, top: 3.0, bottom: 3.0),
-          child: ListTile(
-            title: Text(
-              result.name,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
+          child: CustomListTile(result: result),
         );
       },
     );
