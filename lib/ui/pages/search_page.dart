@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:rick_and_morty_serach/bloc/character_bloc.dart';
 import 'package:rick_and_morty_serach/data/models/character.dart';
 import 'package:rick_and_morty_serach/ui/widgets/custom_list_tile.dart';
@@ -23,13 +24,20 @@ class _SearchPageState extends State<SearchPage> {
   final RefreshController refreshController = RefreshController();
   bool _isPagination = false;
 
+  Timer? searchDebounce;
+
+  final _storage = HydratedBlocOverrides.current?.storage;
+
   @override
   void initState() {
-    if (_currentResults.isEmpty) {
-      context
-          .read<CharacterBloc>()
-          .add(const CharacterEvent.fetch(name: '', page: 1));
+    if (_storage.runtimeType.toString().isEmpty) {
+      if (_currentResults.isEmpty) {
+        context
+            .read<CharacterBloc>()
+            .add(const CharacterEvent.fetch(name: '', page: 1));
+      }
     }
+    super.initState();
   }
 
   @override
@@ -60,9 +68,12 @@ class _SearchPageState extends State<SearchPage> {
               _currentPage = 1;
               _currentResults = [];
               _currentSearchStr = value;
-              context
-                  .read<CharacterBloc>()
-                  .add(CharacterEvent.fetch(name: value, page: _currentPage));
+              searchDebounce?.cancel();
+              searchDebounce = Timer(const Duration(milliseconds: 500), () {
+                context
+                    .read<CharacterBloc>()
+                    .add(CharacterEvent.fetch(name: value, page: _currentPage));
+              });
             },
           ),
         ),
