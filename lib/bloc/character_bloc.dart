@@ -23,7 +23,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState>
         emit(CharacterState.loaded(characterLoaded: _characterLoaded));
       } catch (_) {
         emit(const CharacterState.error());
-        rethrow;
+        //rethrow;
       }
     });
   }
